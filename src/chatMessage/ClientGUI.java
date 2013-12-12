@@ -142,7 +142,7 @@ package chatMessage;
 //	 
 //	        if(o == login) {
 //	            // ok it is a connection request
-//	            String username = tf.getText().trim();
+//	            String username = tf.getText(jTextArea2).trim();
 //	            // empty username ignore it
 //	            if(username.length() == 0)
 //	                return;

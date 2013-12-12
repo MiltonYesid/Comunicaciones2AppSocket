@@ -131,7 +131,7 @@ package chatMessage;
 	        for(int i = al.size(); --i >= 0;) {
 	            Server.ClientThread ct = al.get(i);
 	            // try to write to the Client if it fails remove it from the list
-	            if(!ct.writeMsg(messageLf)) {
+	            if(!ct.writeMsg(messageLf,23)) {
 	                al.remove(i);
 	                display("Disconnected Client " + ct.username + " removed from list.");
 	            }
@@ -232,6 +232,7 @@ package chatMessage;
 	                // read a String (which is an object)
 	                try {
 	                    cm = (ChatMessage) sInput.readObject();
+                            
 	                }
 	                catch (IOException e) {
 	                    display(username + " Exception reading Streams: " + e);
@@ -244,17 +245,19 @@ package chatMessage;
 	                String message = cm.getMessage();
 	 
 	                // Switch on the type of message receive
+                        
 	                switch(cm.getType()) {
 	 
 	                case ChatMessage.MESSAGE:
 	                    broadcast(username + ": " + message);
+                            writeMsg(username + ": " + message,ChatMessage.MESSAGE);
 	                    break;
 	                case ChatMessage.LOGOUT:
 	                    display(username + " disconnected with a LOGOUT message.");
 	                    keepGoing = false;
 	                    break;
 	                case ChatMessage.WHOISIN:
-	                    writeMsg("List of the users connected at " + sdf.format(new Date()) + "\n");
+	                    //writeMsg("List of the users connected at " + sdf.format(new Date()) + "\n",ChatMessage.LOGOUT);
 	                    // scan al the users connected
                             String nombresUsuarios = "";
                             
@@ -264,7 +267,7 @@ package chatMessage;
                                 System.out.println(nombresUsuarios);
 //	                        writeMsg("cantidad de jugadores:"+(i+1) + " " + nombresUsuarios);
 	                    }
-                            writeMsg("cantidad de jugadores:"+(al.size()) + "\n " + nombresUsuarios);
+                            writeMsg("cantidad de jugadores:"+(al.size()) + "\n " + nombresUsuarios,ChatMessage.WHOISIN);
 	                    break;
 	                }
 	            }
@@ -294,7 +297,7 @@ package chatMessage;
 	        /*
 	         * Write a String to the Client output stream
 	         */
-	        private boolean writeMsg(String msg) {
+	        private boolean writeMsg(String msg,int i) {
 	            // if Client is still connected send the message to it
 	            if(!socket.isConnected()) {
 	                close();
@@ -302,7 +305,7 @@ package chatMessage;
 	            }
 	            // write the message to the stream
 	            try {
-	                sOutput.writeObject(msg);
+	                sOutput.writeObject(new ChatMessage(i,msg));
 	            }
 	            // if an error occurs, do not abort just inform the user
 	            catch(IOException e) {

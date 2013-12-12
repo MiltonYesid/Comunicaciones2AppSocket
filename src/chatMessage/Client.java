@@ -20,7 +20,7 @@ public class Client {
     // the server, the port and the username
     private String server, username;
     private int port;
-
+    private ChatMessage cm;
 
     public Client(String server, int port, String username, FormCliente cliente) {
         this.server = server;
@@ -28,14 +28,13 @@ public class Client {
         this.username = username;
         this.cliente = cliente;
     }
-    
 
     public boolean start() {
         // try to connect to the server
         try {
-            
+
             socket = new Socket(server, port);
-            
+
         } // if it failed not much I can so
         catch (Exception ec) {
             display("Error connectiong to server:" + ec);
@@ -59,9 +58,13 @@ public class Client {
         // Send our username to the server this is the only message that we
         // will send as a String. All other messages will be ChatMessage objects
         try {
+            /*
+             * indicamos que lo primero a imprimir es el nombre del cliente 
+             * al que se ingreso al servidor
+             */
             sOutput.writeObject(username);
-            
-            
+
+
         } catch (IOException eIO) {
             display("Exception doing login : " + eIO);
             disconnect();
@@ -87,6 +90,7 @@ public class Client {
      */
     public void sendMessage(ChatMessage msg) {
         try {
+            this.cm = msg;
             sOutput.writeObject(msg);
         } catch (IOException e) {
             display("Exception writing to server: " + e);
@@ -123,20 +127,31 @@ public class Client {
         }
 
     }
- 
+
     public class ListenFromServer extends Thread {
 
         public void run() {
             while (true) {
                 try {
-                    String msg = (String) sInput.readObject();
+
+                     ChatMessage msg = (ChatMessage) sInput.readObject();
+                    
                     // if console mode print the message and add back the prompt
                     if (cliente == null) {
                         System.out.println(msg);
                         System.out.print("> ");
                     } else {
                         //cliente.append(msg);
-                        cliente.añadirUsuarios(msg);
+                        System.out.println("..........................."+msg.getType());
+                        if(msg.getType()==0)
+                        {
+                            cliente.añadirUsuarios(msg.getMessage());
+                        }else
+                        {
+                            cliente.agregarMensaje(msg.getMessage());
+                        }
+                            
+                            //cliente.agregarMensaje(msg);
                     }
                 } catch (IOException e) {
                     display("Server has close the connection: " + e);
