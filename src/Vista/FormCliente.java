@@ -83,6 +83,7 @@ public class FormCliente extends javax.swing.JFrame {
         jTextField1 = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
+        userEmpty = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -157,6 +158,8 @@ public class FormCliente extends javax.swing.JFrame {
 
         jPanel1.setLayout(null);
 
+        userEmpty.setForeground(new java.awt.Color(255, 255, 255));
+
         javax.swing.GroupLayout panel1Layout = new javax.swing.GroupLayout(panel1);
         panel1.setLayout(panel1Layout);
         panel1Layout.setHorizontalGroup(
@@ -171,7 +174,11 @@ public class FormCliente extends javax.swing.JFrame {
                         .addComponent(jLabel2))
                     .addGroup(panel1Layout.createSequentialGroup()
                         .addGap(10, 10, 10)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(panel1Layout.createSequentialGroup()
+                                .addGap(12, 12, 12)
+                                .addComponent(userEmpty)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -186,7 +193,9 @@ public class FormCliente extends javax.swing.JFrame {
                 .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
+                .addComponent(userEmpty)
+                .addContainerGap())
         );
 
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
@@ -206,7 +215,9 @@ public class FormCliente extends javax.swing.JFrame {
 
         cajaMensajes.setEditable(false);
         cajaMensajes.setColumns(20);
+        cajaMensajes.setLineWrap(true);
         cajaMensajes.setRows(5);
+        cajaMensajes.setOpaque(false);
         jScrollPane2.setViewportView(cajaMensajes);
 
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
@@ -352,6 +363,7 @@ public class FormCliente extends javax.swing.JFrame {
              */
             connected = true;
         } else {
+            this.userEmpty.setText("Se requiere un nombre de usuario ");
         }
 
     }//GEN-LAST:event_jButton1ActionPerformed
@@ -440,5 +452,6 @@ public class FormCliente extends javax.swing.JFrame {
     private javax.swing.JPanel panel1;
     private javax.swing.JPanel panelChat;
     private javax.swing.JPanel panelUsuarios;
+    private javax.swing.JLabel userEmpty;
     // End of variables declaration//GEN-END:variables
 }
