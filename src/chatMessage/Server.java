@@ -183,7 +183,7 @@ package chatMessage;
 	    }
 	 
 	    /** One instance of this thread will run for each client */
-	    class ClientThread extends Thread {
+	   public class ClientThread extends Thread {
 	        // the socket where to listen/talk
 	        Socket socket;
 	        ObjectInputStream sInput;
@@ -256,10 +256,15 @@ package chatMessage;
 	                case ChatMessage.WHOISIN:
 	                    writeMsg("List of the users connected at " + sdf.format(new Date()) + "\n");
 	                    // scan al the users connected
+                            String nombresUsuarios = "";
+                            
 	                    for(int i = 0; i < al.size(); ++i) {
 	                        Server.ClientThread ct = al.get(i);
-	                        writeMsg((i+1) + ") " + ct.username + " since " + ct.date);
+                                nombresUsuarios += ct.username+ "\n";
+                                System.out.println(nombresUsuarios);
+//	                        writeMsg("cantidad de jugadores:"+(i+1) + " " + nombresUsuarios);
 	                    }
+                            writeMsg("cantidad de jugadores:"+(al.size()) + "\n " + nombresUsuarios);
 	                    break;
 	                }
 	            }

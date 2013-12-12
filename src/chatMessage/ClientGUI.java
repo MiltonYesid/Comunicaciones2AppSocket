@@ -119,69 +119,69 @@ package chatMessage;
 	    * Button or JTextField clicked
 	    */
 	    public void actionPerformed(ActionEvent e) {
-	        Object o = e.getSource();
-	        // if it is the Logout button
-	        if(o == logout) {
-	            client.sendMessage(new ChatMessage(ChatMessage.LOGOUT, ""));
-	            return;
-	        }
-	        // if it the who is in button
-	        if(o == whoIsIn) {
-	            client.sendMessage(new ChatMessage(ChatMessage.WHOISIN, ""));              
-	            return;
-	        }
-	 
-	        // ok it is coming from the JTextField
-	        if(connected) {
-	            // just have to send the message
-	            client.sendMessage(new ChatMessage(ChatMessage.MESSAGE, tf.getText()));            
-	            tf.setText("");
-	            return;
-	        }
-	         
-	 
-	        if(o == login) {
-	            // ok it is a connection request
-	            String username = tf.getText().trim();
-	            // empty username ignore it
-	            if(username.length() == 0)
-	                return;
-	            // empty serverAddress ignore it
-	            String server = tfServer.getText().trim();
-	            if(server.length() == 0)
-	                return;
-	            // empty or invalid port numer, ignore it
-	            String portNumber = tfPort.getText().trim();
-	            if(portNumber.length() == 0)
-	                return;
-	            int port = 0;
-	            try {
-	                port = Integer.parseInt(portNumber);
-	            }
-	            catch(Exception en) {
-	                return;   // nothing I can do if port number is not valid
-	            }
-	 
-	            // try creating a new Client with GUI
-	            client = new Client(server, port, username, this);
-	            // test if we can start the Client
-	            if(!client.start())
-	                return;
-	            tf.setText("");
-	            label.setText("Enter your message below");
-	            connected = true;
-	             
-	            // disable login button
-	            login.setEnabled(false);
-	            // enable the 2 buttons
-	            logout.setEnabled(true);
-	            whoIsIn.setEnabled(true);
-	            // disable the Server and Port JTextField
-	            tfServer.setEditable(false);
-	            tfPort.setEditable(false);
-	            // Action listener for when the user enter a message
-	            tf.addActionListener(this);
-	        }
+//	        Object o = e.getSource();
+//	        // if it is the Logout button
+//	        if(o == logout) {
+//	            client.sendMessage(new ChatMessage(ChatMessage.LOGOUT, ""));
+//	            return;
+//	        }
+//	        // if it the who is in button
+//	        if(o == whoIsIn) {
+//	            client.sendMessage(new ChatMessage(ChatMessage.WHOISIN, ""));              
+//	            return;
+//	        }
+//	 
+//	        // ok it is coming from the JTextField
+//	        if(connected) {
+//	            // just have to send the message
+//	            client.sendMessage(new ChatMessage(ChatMessage.MESSAGE, tf.getText()));            
+//	            tf.setText("");
+//	            return;
+//	        }
+//	         
+//	 
+//	        if(o == login) {
+//	            // ok it is a connection request
+//	            String username = tf.getText().trim();
+//	            // empty username ignore it
+//	            if(username.length() == 0)
+//	                return;
+//	            // empty serverAddress ignore it
+//	            String server = tfServer.getText().trim();
+//	            if(server.length() == 0)
+//	                return;
+//	            // empty or invalid port numer, ignore it
+//	            String portNumber = tfPort.getText().trim();
+//	            if(portNumber.length() == 0)
+//	                return;
+//	            int port = 0;
+//	            try {
+//	                port = Integer.parseInt(portNumber);
+//	            }
+//	            catch(Exception en) {
+//	                return;   // nothing I can do if port number is not valid
+//	            }
+//	 
+//	            // try creating a new Client with GUI
+//	            client = new Client(server, port, username, this);
+//	            // test if we can start the Client
+//	            if(!client.start())
+//	                return;
+//	            tf.setText("");
+//	            label.setText("Enter your message below");
+//	            connected = true;
+//	             
+//	            // disable login button
+//	            login.setEnabled(false);
+//	            // enable the 2 buttons
+//	            logout.setEnabled(true);
+//	            whoIsIn.setEnabled(true);
+//	            // disable the Server and Port JTextField
+//	            tfServer.setEditable(false);
+//	            tfPort.setEditable(false);
+//	            // Action listener for when the user enter a message
+//	            tf.addActionListener(this);
+//	        }
 	 
 	    }
 	 
