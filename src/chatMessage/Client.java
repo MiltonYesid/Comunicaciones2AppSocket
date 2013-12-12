@@ -27,23 +27,28 @@ package chatMessage;
 	     *  port: the port number
 	     *  username: the username
 	     */
-	    Client(String server, int port, String username) {
-	        // which calls the common constructor with the GUI set to null
-	        this(server, port, username, null);
-	    }
+//	    public Client(String server, int port, String username) {
+//	        // which calls the common constructor with the GUI set to null
+//	        this(server, port, username, null);
+//	    }
 	 
 	    /*
 	     * Constructor call when used from a GUI
 	     * in console mode the ClienGUI parameter is null
 	     */
-	    Client(String server, int port, String username, ClientGUI cg) {
+	    public Client(String server, int port, String username, ClientGUI cg) {
 	        this.server = server;
 	        this.port = port;
 	        this.username = username;
 	        // save if we are in GUI mode or not
 	        this.cg = cg;
 	    }
-	     
+	      public Client(String server, int port, String username) {
+	        this.server = server;
+	        this.port = port;
+	        this.username = username;
+	        // save if we are in GUI mode or not
+	    }
 	    /*
 	     * To start the dialog
 	     */
