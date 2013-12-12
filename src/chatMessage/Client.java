@@ -90,7 +90,6 @@ public class Client {
      */
     public void sendMessage(ChatMessage msg) {
         try {
-            this.cm = msg;
             sOutput.writeObject(msg);
         } catch (IOException e) {
             display("Exception writing to server: " + e);
@@ -142,7 +141,7 @@ public class Client {
                         System.out.print("> ");
                     } else {
                         //cliente.append(msg);
-                        System.out.println("..........................."+msg.getType());
+                        
                         if(msg.getType()==0)
                         {
                             cliente.añadirUsuarios(msg.getMessage());

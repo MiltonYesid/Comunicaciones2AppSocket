@@ -118,8 +118,8 @@ package chatMessage;
 	     */
 	    private synchronized void broadcast(String message) {
 	        // add HH:mm:ss and \n to the message
-	        String time = sdf.format(new Date());
-	        String messageLf = time + " " + message + "\n";
+	        String time = sdf.format(new Date().getMinutes());
+	        String messageLf = time + " " + message + "";
 	        // display message on console or GUI
 	        if(sg == null)
 	            System.out.print(messageLf);
@@ -249,8 +249,8 @@ package chatMessage;
 	                switch(cm.getType()) {
 	 
 	                case ChatMessage.MESSAGE:
-	                    broadcast(username + ": " + message);
-                            writeMsg(username + ": " + message,ChatMessage.MESSAGE);
+	                    broadcast(username + "| " + message);
+                           // writeMsg(username + ": " + message,ChatMessage.MESSAGE);
 	                    break;
 	                case ChatMessage.LOGOUT:
 	                    display(username + " disconnected with a LOGOUT message.");
