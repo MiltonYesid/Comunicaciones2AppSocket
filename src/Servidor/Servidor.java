@@ -1,7 +1,8 @@
 package Servidor;
 
+import Modelo.Juego;
+import Modelo.paqueteMensaje;
 import Vista.ServerGUI;
-import chatMessage.*;
 	import java.io.*;
         import java.net.*;
         import java.text.SimpleDateFormat;
@@ -42,6 +43,8 @@ import chatMessage.*;
 	        sdf = new SimpleDateFormat("HH:mm:ss");
 	        // ArrayList for the Client list
 	        al = new ArrayList<Servidor.ClientThread>();
+                Juego juego = new Juego();
+                System.out.println(juego.generarNumero());
 	    }
 
             public void start() {

@@ -1,6 +1,6 @@
 package Cliente;
 
-import chatMessage.*;
+import Modelo.paqueteMensaje;
 import Vista.FormCliente;
 import java.net.*;
 import java.io.*;
