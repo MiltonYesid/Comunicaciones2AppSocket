@@ -36,31 +36,36 @@ public class Juego {
         this.respuesta = respuesta;
     }
     private String numero;
-    private static  Random nroAleatorio = new Random();
-    private String  respuesta;
-    public String generarNumero()
-    {
-        String num="";
-        int  nroGenerado1 = nroAleatorio.nextInt(4);
-        int  nroGenerado2 = nroAleatorio.nextInt(4);
-        int  nroGenerado3 = nroAleatorio.nextInt(4);
-        int  nroGenerado4 = nroAleatorio.nextInt(4);
-        num = nroGenerado1+""+nroGenerado2+""+nroGenerado3+""+nroGenerado4;
+    private static Random nroAleatorio = new Random();
+    private String respuesta;
+
+    public String generarNumero() {
+        String num = "";
+        int nroGenerado1 = nroAleatorio.nextInt(4);
+        int nroGenerado2 = nroAleatorio.nextInt(4);
+        int nroGenerado3 = nroAleatorio.nextInt(4);
+        int nroGenerado4 = nroAleatorio.nextInt(4);
+        num = nroGenerado1 + "" + nroGenerado2 + "" + nroGenerado3 + "" + nroGenerado4;
         this.numero = num;
         return num;
     }
-    public String verificarNumero(String numero1)
-    {
-        if(this.numero.equalsIgnoreCase(numero1))
-        {
+
+    public String verificarNumero(String numero1) {
+        if (this.numero.equalsIgnoreCase(numero1)) {
             return "XXXX";
         }
-        String rta="";
-        for(int i = 0 ; i < 4 ; i++)
-        {
-            if(this.numero.charAt(i)==numero1.charAt(i))
-            {
-                rta += "X";
+        String rta = "";
+        if (numero1.length() > 5) {
+            return "numero incorrecto";
+        } else {
+            if (numero.length() == 4) {
+                for (int i = 0; i < 4; i++) {
+                    if (this.numero.charAt(i) == numero1.charAt(i)) {
+                        rta += "X";
+                    }
+                }
+            } else {
+                return "numero incompleto";
             }
         }
         return rta;

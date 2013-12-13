@@ -246,8 +246,10 @@ public class Servidor {
                 switch (cm.getTipoMensaje()) {
                     case paqueteMensaje.tipoNumeroJuego:
                         String respuesta = juego.verificarNumero(cm.getMessage());
-                        if ("XXXX".equalsIgnoreCase(cm.getMessage())) {
+                        if (cm.getMessage().contains("XXXX")) {
                             broadcast("FELICIDADES GANO USTED CON EL NUMERO->" + cm.getMessage() + "-->" + username, 3);
+                             display(username + " gano gano gano");
+                            System.out.println("gano gano gano");
                         } else {
                             broadcast(respuesta + "-->" + cm.getMessage() + "-->" + username, 3);
                         }
