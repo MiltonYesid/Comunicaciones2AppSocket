@@ -1,5 +1,7 @@
-package chatMessage;
+package Servidor;
 
+import Vista.ServerGUI;
+import chatMessage.*;
 	import java.io.*;
         import java.net.*;
         import java.text.SimpleDateFormat;
@@ -8,11 +10,11 @@ package chatMessage;
 	/*
 	 * The server that can be run both as a console application or a GUI
 	 */
-	public class Server {
+	public class Servidor {
 	    // a unique ID for each connection
 	    private static int uniqueId;
 	    // an ArrayList to keep the list of the Client
-	    private ArrayList<Server.ClientThread> al;
+	    private ArrayList<Servidor.ClientThread> al;
 	    // if I am in a GUI
 	    private ServerGUI sg;
 	    // to display time
@@ -27,11 +29,11 @@ package chatMessage;
 	     *  server constructor that receive the port to listen to for connection as parameter
 	     *  in console
 	     */
-	    public Server(int port) {
+	    public Servidor(int port) {
 	        this(port, null);
 	    }
 	     
-	    public Server(int port, ServerGUI sg) {
+	    public Servidor(int port, ServerGUI sg) {
 	        // GUI or not
 	        this.sg = sg;
 	        // the port
@@ -39,7 +41,7 @@ package chatMessage;
 	        // to display hh:mm:ss
 	        sdf = new SimpleDateFormat("HH:mm:ss");
 	        // ArrayList for the Client list
-	        al = new ArrayList<Server.ClientThread>();
+	        al = new ArrayList<Servidor.ClientThread>();
 	    }
 
             public void start() {
@@ -60,7 +62,7 @@ package chatMessage;
 	                // if I was asked to stop
 	                if(!keepGoing)
 	                    break;
-	                Server.ClientThread t = new Server.ClientThread(socket);  // make a thread of it
+	                Servidor.ClientThread t = new Servidor.ClientThread(socket);  // make a thread of it
 	                al.add(t);                                  // save it in the ArrayList
 	                t.start();
 	            }
@@ -68,7 +70,7 @@ package chatMessage;
 	            try {
 	                serverSocket.close();
 	                for(int i = 0; i < al.size(); ++i) {
-	                    Server.ClientThread tc = al.get(i);
+	                    Servidor.ClientThread tc = al.get(i);
 	                    try {
 	                    tc.sInput.close();
 	                    tc.sOutput.close();
@@ -92,7 +94,7 @@ package chatMessage;
 	    /*
 	     * For the GUI to stop the server
 	     */
-	    protected void stop() {
+	    public void stop() {
 	        keepGoing = false;
 	        // connect to myself as Client to exit statement
 	        // Socket socket = serverSocket.accept();
@@ -116,7 +118,7 @@ package chatMessage;
 	    /*
 	     *  to broadcast a message to all Clients
 	     */
-	    private synchronized void broadcast(String message) {
+	    public synchronized void broadcast(String message) {
 	        // add HH:mm:ss and \n to the message
 	        String time = sdf.format(new Date().getMinutes());
 	        String messageLf = time + " " + message + "";
@@ -129,7 +131,7 @@ package chatMessage;
 	        // we loop in reverse order in case we would have to remove a Client
 	        // because it has disconnected
 	        for(int i = al.size(); --i >= 0;) {
-	            Server.ClientThread ct = al.get(i);
+	            Servidor.ClientThread ct = al.get(i);
 	            // try to write to the Client if it fails remove it from the list
 	            if(!ct.writeMsg(messageLf,23)) {
 	                al.remove(i);
@@ -138,11 +140,11 @@ package chatMessage;
 	        }
 	    }
 	 
-	    // for a client who logoff using the LOGOUT message
+	    // for a client who logoff using the tipoSalirConexion message
 	    synchronized void remove(int id) {
 	        // scan the array list until we found the Id
 	        for(int i = 0; i < al.size(); ++i) {
-	            Server.ClientThread ct = al.get(i);
+	            Servidor.ClientThread ct = al.get(i);
 	            // found it
 	            if(ct.id == id) {
 	                al.remove(i);
@@ -153,8 +155,8 @@ package chatMessage;
 	     
 	    /*
 	     *  To run as a console application just open a console window and:
-	     * > java Server
-	     * > java Server portNumber
+	     * > java Servidor
+	     * > java Servidor portNumber
 	     * If the port number is not specified 1500 is used
 	     */
 	    public static void main(String[] args) {
@@ -178,7 +180,7 @@ package chatMessage;
 	                 
 	        }
 	        // create a server object and start it
-	        Server server = new Server(portNumber);
+	        Servidor server = new Servidor(portNumber);
 	        server.start();
 	    }
 	 
@@ -193,7 +195,7 @@ package chatMessage;
 	        // the Username of the Client
 	        String username;
 	        // the only type of message a will receive
-	        ChatMessage cm;
+	        paqueteMensaje cm;
 	        // the date I connect
 	        String date;
 	 
@@ -226,12 +228,12 @@ package chatMessage;
 	 
 	        // what will run forever
 	        public void run() {
-	            // to loop until LOGOUT
+	            // to loop until tipoSalirConexion
 	            boolean keepGoing = true;
 	            while(keepGoing) {
 	                // read a String (which is an object)
 	                try {
-	                    cm = (ChatMessage) sInput.readObject();
+	                    cm = (paqueteMensaje) sInput.readObject();
                             
 	                }
 	                catch (IOException e) {
@@ -246,28 +248,28 @@ package chatMessage;
 	 
 	                // Switch on the type of message receive
                         
-	                switch(cm.getType()) {
+	                switch(cm.getTipoMensaje()) {
 	 
-	                case ChatMessage.MESSAGE:
+	                case paqueteMensaje.tipoMensajeTexto:
 	                    broadcast(username + "| " + message);
-                           // writeMsg(username + ": " + message,ChatMessage.MESSAGE);
+                           // writeMsg(username + ": " + message,ChatMessage.tipoMensajeTexto);
 	                    break;
-	                case ChatMessage.LOGOUT:
+	                case paqueteMensaje.tipoSalirConexion:
 	                    display(username + " disconnected with a LOGOUT message.");
 	                    keepGoing = false;
 	                    break;
-	                case ChatMessage.WHOISIN:
-	                    //writeMsg("List of the users connected at " + sdf.format(new Date()) + "\n",ChatMessage.LOGOUT);
+	                case paqueteMensaje.tipoQuienesSeEncuentranConectados:
+	                    //writeMsg("List of the users connected at " + sdf.format(new Date()) + "\n",ChatMessage.tipoSalirConexion);
 	                    // scan al the users connected
                             String nombresUsuarios = "";
                             
 	                    for(int i = 0; i < al.size(); ++i) {
-	                        Server.ClientThread ct = al.get(i);
+	                        Servidor.ClientThread ct = al.get(i);
                                 nombresUsuarios += ct.username+ "\n";
                                 System.out.println(nombresUsuarios);
 //	                        writeMsg("cantidad de jugadores:"+(i+1) + " " + nombresUsuarios);
 	                    }
-                            writeMsg("cantidad de jugadores:"+(al.size()) + "\n " + nombresUsuarios,ChatMessage.WHOISIN);
+                            writeMsg("cantidad de jugadores:"+(al.size()) + "\n " + nombresUsuarios,paqueteMensaje.tipoQuienesSeEncuentranConectados);
 	                    break;
 	                }
 	            }
@@ -305,7 +307,7 @@ package chatMessage;
 	            }
 	            // write the message to the stream
 	            try {
-	                sOutput.writeObject(new ChatMessage(i,msg));
+	                sOutput.writeObject(new paqueteMensaje(i,msg));
 	            }
 	            // if an error occurs, do not abort just inform the user
 	            catch(IOException e) {

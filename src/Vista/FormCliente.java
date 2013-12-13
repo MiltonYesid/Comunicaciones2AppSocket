@@ -4,8 +4,8 @@
  */
 package Vista;
 
-import chatMessage.ChatMessage;
-import chatMessage.Client;
+import Cliente.Cliente;
+import chatMessage.paqueteMensaje;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -18,7 +18,7 @@ import javax.swing.Timer;
 public class FormCliente extends javax.swing.JFrame {
 
     private boolean connected;
-    private Client client;
+    private Cliente cliente;
 
     /**
      * Creates new form FormCliente
@@ -38,8 +38,8 @@ public class FormCliente extends javax.swing.JFrame {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
                     System.out.println("Presionó Enter");
-                    if (!client.equals(null)) {
-                        client.sendMessage(new ChatMessage(ChatMessage.MESSAGE, mensaje.getText()));
+                    if (!cliente.equals(null)) {
+                        cliente.enviarMensajeAlServidor(new paqueteMensaje(paqueteMensaje.tipoMensajeTexto, mensaje.getText()));
                     }
                     mensaje.setText("");
                 }
@@ -324,20 +324,21 @@ public class FormCliente extends javax.swing.JFrame {
          */
         if (!username.isEmpty()) {
             /*
-             * COnstruimos una instancia de client con los parametros establecidos
+             * COnstruimos una instancia de cliente con los parametros establecidos
              * Localhost: nombre del sevidor
              * 1500: nro de puerto
              * username: el nombre del cliente
              * this: hace referencia a la instancia del formulario para manipularlo
              */
-            client = new Client("localhost", 1500, username, this);
+            cliente = new Cliente("localhost", 1500, username, this);
             /*{
              * si el cliente no puede conectarse se imprime dicho contenido por 
              * consola , en caso contrario se muestran los paneles no visibles
              * y se procede a jugar
              */
-            if (!client.start()) {
+            if (!cliente.iniciar()) {
                 System.out.println("imposible realizar conexion");
+                this.userEmpty.setText("Servidor  se encuentra apagado");
                 return;
             } else {
                 /*
@@ -384,14 +385,14 @@ public class FormCliente extends javax.swing.JFrame {
      */
 
     public void who() {
-        if (!client.equals(null)) {
-            client.sendMessage(new ChatMessage(ChatMessage.WHOISIN, ""));
+        if (!cliente.equals(null)) {
+            cliente.enviarMensajeAlServidor(new paqueteMensaje(paqueteMensaje.tipoQuienesSeEncuentranConectados, ""));
         }
     }
     public void mensajes()
     {
-         if (!client.equals(null)) {
-            client.sendMessage(new ChatMessage(ChatMessage.MESSAGE, ""));
+         if (!cliente.equals(null)) {
+            cliente.enviarMensajeAlServidor(new paqueteMensaje(paqueteMensaje.tipoMensajeTexto, ""));
         }
     }
 

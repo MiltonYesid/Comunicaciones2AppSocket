@@ -1,5 +1,7 @@
-package chatMessage;
+package Vista;
 
+import Servidor.*;
+import chatMessage.*;
 	import javax.swing.*;
 	import java.awt.*;
 	import java.awt.event.*;
@@ -17,7 +19,7 @@ package chatMessage;
 	    // The port number
 	    private JTextField tPortNumber;
 	    // my server
-	    private Server server;
+	    private Servidor server;
 	     
 	     
 	    // server constructor that receive the port to listen to for connection as parameter
@@ -55,11 +57,11 @@ package chatMessage;
 	 
 	    // append message to the two JTextArea
 	    // position at the end
-	    void appendRoom(String str) {
+	    public void appendRoom(String str) {
 	        chat.append(str);
 	        chat.setCaretPosition(chat.getText().length() - 1);
 	    }
-	    void appendEvent(String str) {
+	    public void appendEvent(String str) {
 	        event.append(str);
 	        event.setCaretPosition(chat.getText().length() - 1);
 	         
@@ -84,15 +86,15 @@ package chatMessage;
 	            appendEvent("Invalid port number");
 	            return;
 	        }
-	        // ceate a new Server
-	        server = new Server(port, this);
+	        // ceate a new Servidor
+	        server = new Servidor(port, this);
 	        // and start it as a thread
 	        new ServerGUI.ServerRunning().start();
 	        stopStart.setText("Stop");
 	        tPortNumber.setEditable(false);
 	    }
 	     
-	    // entry point to start the Server
+	    // entry point to start the Servidor
 	    public static void main(String[] arg) {
 	        // start server default port 1500
 	        new ServerGUI(1500);
@@ -103,7 +105,7 @@ package chatMessage;
 	     * I need to close the connection with the server to free the port
 	     */
 	    public void windowClosing(WindowEvent e) {
-	        // if my Server exist
+	        // if my Servidor exist
 	        if(server != null) {
 	            try {
 	                server.stop();          // ask the server to close the conection
@@ -125,7 +127,7 @@ package chatMessage;
 	    public void windowDeactivated(WindowEvent e) {}
 	 
 	    /*
-	     * A thread to run the Server
+	     * A thread to run the Servidor
 	     */
 	    class ServerRunning extends Thread {
 	        public void run() {
