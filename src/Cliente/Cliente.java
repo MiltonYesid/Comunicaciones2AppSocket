@@ -110,7 +110,13 @@ public class Cliente {
                     if (msg.getTipoMensaje() == 0) {
                         cliente.añadirUsuarios(msg.getMessage());
                     } else {
+                        if(msg.getTipoMensaje()==3)
+                        {
+                            cliente.agregarNumeroJuego(msg.getMessage());
+                        }else
+                        {
                         cliente.agregarMensaje(msg.getMessage());
+                        }
                     }
                 } catch (IOException e) {
                 } // can't happen with a String object but need the catch anyhow

@@ -6,6 +6,7 @@ public class paqueteMensaje implements Serializable {
 
     protected static final long serialVersionUID = 1112122200L;
     public static final int tipoQuienesSeEncuentranConectados = 0, tipoMensajeTexto = 1, tipoSalirConexion = 2;
+    public static final int tipoNumeroJuego = 3;
     private int tipoMensaje;
     private String contenidoMensaje;
 

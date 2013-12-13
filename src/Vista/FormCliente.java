@@ -5,6 +5,7 @@
 package Vista;
 
 import Cliente.Cliente;
+import Modelo.Juego;
 import Modelo.paqueteMensaje;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -27,6 +28,8 @@ public class FormCliente extends javax.swing.JFrame {
         initComponents();
         inicializarAlgunosComponentes();
 
+
+
     }
 
     private void inicializarAlgunosComponentes() {
@@ -37,7 +40,6 @@ public class FormCliente extends javax.swing.JFrame {
         this.mensaje.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-                    System.out.println("Presionó Enter");
                     if (!cliente.equals(null)) {
                         cliente.enviarMensajeAlServidor(new paqueteMensaje(paqueteMensaje.tipoMensajeTexto, mensaje.getText()));
                     }
@@ -46,11 +48,87 @@ public class FormCliente extends javax.swing.JFrame {
             }
         });
         /*
+         * para la caja del nroPropuesto
+         */
+        this.nroPropuesto.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+                    if (!cliente.equals(null)) {
+                        cliente.enviarMensajeAlServidor(new paqueteMensaje(paqueteMensaje.tipoNumeroJuego, nroPropuesto.getText()));
+                    }
+                    nroPropuesto.setText("");
+                }
+            }
+        });
+
+        this.user.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+
+                    /*
+                     * obtenemos el nombre del usuario
+                     */
+                    String username = user.getText().trim();
+                    /*
+                     * Realizamos un castign para saber que el jugador no es vacio
+                     */
+                    if (!username.isEmpty()) {
+                        /*
+                         * COnstruimos una instancia de cliente con los parametros establecidos
+                         * Localhost: nombre del sevidor
+                         * 1500: nro de puerto
+                         * username: el nombre del cliente
+                         * this: hace referencia a la instancia del formulario para manipularlo
+                         */
+                        cliente = new Cliente("localhost", 1500, username, FormCliente.this);
+                        /*{
+                         * si el cliente no puede conectarse se imprime dicho contenido por 
+                         * consola , en caso contrario se muestran los paneles no visibles
+                         * y se procede a jugar
+                         */
+                        if (!cliente.iniciar()) {
+                            System.out.println("imposible realizar conexion");
+                            userEmpty.setText("Servidor  se encuentra apagado");
+                            return;
+                        } else {
+                            /*
+                             * cambiamos el titulo del formulario
+                             */
+                            setTitle("Bienvenid@ " + username);
+                            System.out.println("conexion realizada con exito");
+                            /*
+                             * damos visibilidad a los paneles invisibles
+                             */
+                            panelUsuarios.setVisible(true);
+                            panel1.setVisible(false);
+                            panelChat.setVisible(true);
+                            cajaUsuarios.append(username + "\n\n");
+                            /*
+                             * le damos al temporizador que comiense, dicha funcion 
+                             * mostrara que usuarios se encuentran activos en el servidor
+                             */
+                            panelJuego.setVisible(true);
+                            timer.start();
+                        }
+                        /*
+                         * se establece que la conexion fue existo
+                         */
+                        connected = true;
+                    } else {
+                        userEmpty.setText("Se requiere un nombre de usuario ");
+                    }
+                }
+            }
+        });
+
+        /*
          * establecemos que el panel de los usuarios esta en blanco hasta
          * que se loge un  usuario
          */
         this.panelUsuarios.setVisible(false);
         this.panelChat.setVisible(false);
+        this.panelJuego.setVisible(false);
+
     }
     /*
      * este metodo responde a cada segundo y pregunta por quien esta conectado 
@@ -61,8 +139,6 @@ public class FormCliente extends javax.swing.JFrame {
             who();
         }
     });
-    
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -76,11 +152,10 @@ public class FormCliente extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         panelUsuarios = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        cajaUsuarios = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
         panel1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
+        user = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         userEmpty = new javax.swing.JLabel();
@@ -92,6 +167,10 @@ public class FormCliente extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         cajaMensajes = new javax.swing.JTextArea();
         jLabel5 = new javax.swing.JLabel();
+        panelJuego = new javax.swing.JPanel();
+        nroPropuesto = new javax.swing.JTextField();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        resultados = new javax.swing.JTextArea();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -104,13 +183,13 @@ public class FormCliente extends javax.swing.JFrame {
 
         panelUsuarios.setBackground(new java.awt.Color(0, 102, 102));
 
-        jTextArea1.setEditable(false);
-        jTextArea1.setColumns(20);
-        jTextArea1.setLineWrap(true);
-        jTextArea1.setRows(5);
-        jTextArea1.setEnabled(false);
-        jTextArea1.setRequestFocusEnabled(false);
-        jScrollPane1.setViewportView(jTextArea1);
+        cajaUsuarios.setEditable(false);
+        cajaUsuarios.setColumns(20);
+        cajaUsuarios.setLineWrap(true);
+        cajaUsuarios.setRows(5);
+        cajaUsuarios.setEnabled(false);
+        cajaUsuarios.setRequestFocusEnabled(false);
+        jScrollPane1.setViewportView(cajaUsuarios);
 
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Participantes");
@@ -138,17 +217,9 @@ public class FormCliente extends javax.swing.JFrame {
 
         panel1.setBackground(new java.awt.Color(0, 102, 102));
 
-        jButton1.setText("Ingresar");
-        jButton1.setBorder(javax.swing.BorderFactory.createCompoundBorder());
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        user.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                userActionPerformed(evt);
             }
         });
 
@@ -175,12 +246,10 @@ public class FormCliente extends javax.swing.JFrame {
                     .addGroup(panel1Layout.createSequentialGroup()
                         .addGap(10, 10, 10)
                         .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(user, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(panel1Layout.createSequentialGroup()
                                 .addGap(12, 12, 12)
-                                .addComponent(userEmpty)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(userEmpty)))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panel1Layout.setVerticalGroup(
@@ -189,13 +258,11 @@ public class FormCliente extends javax.swing.JFrame {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
+                .addGap(32, 32, 32)
+                .addComponent(user, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(userEmpty)
-                .addContainerGap())
+                .addGap(334, 334, 334))
         );
 
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
@@ -245,6 +312,39 @@ public class FormCliente extends javax.swing.JFrame {
                 .addGap(16, 16, 16))
         );
 
+        panelJuego.setBackground(new java.awt.Color(0, 102, 102));
+
+        nroPropuesto.setFont(new java.awt.Font("Dialog", 0, 36)); // NOI18N
+
+        resultados.setEditable(false);
+        resultados.setColumns(20);
+        resultados.setRows(5);
+        jScrollPane3.setViewportView(resultados);
+
+        javax.swing.GroupLayout panelJuegoLayout = new javax.swing.GroupLayout(panelJuego);
+        panelJuego.setLayout(panelJuegoLayout);
+        panelJuegoLayout.setHorizontalGroup(
+            panelJuegoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelJuegoLayout.createSequentialGroup()
+                .addGap(37, 37, 37)
+                .addComponent(nroPropuesto, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(42, 42, 42)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        panelJuegoLayout.setVerticalGroup(
+            panelJuegoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelJuegoLayout.createSequentialGroup()
+                .addGroup(panelJuegoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelJuegoLayout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(nroPropuesto, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(panelJuegoLayout.createSequentialGroup()
+                        .addGap(26, 26, 26)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)))
+                .addGap(25, 25, 25))
+        );
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -257,20 +357,20 @@ public class FormCliente extends javax.swing.JFrame {
                         .addGap(39, 39, 39))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel3)
-                        .addContainerGap())
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addGap(0, 9, Short.MAX_VALUE)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(panel1, javax.swing.GroupLayout.PREFERRED_SIZE, 445, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(panelChat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(29, 29, 29)
-                                .addComponent(panelUsuarios, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(19, 19, 19))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addContainerGap())))))
+                            .addComponent(panelChat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(panel1, javax.swing.GroupLayout.PREFERRED_SIZE, 456, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(panelJuego, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(panelUsuarios, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(19, 19, 19))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addContainerGap())))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -280,9 +380,15 @@ public class FormCliente extends javax.swing.JFrame {
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(panelUsuarios, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(26, 26, 26)
-                        .addComponent(panel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(26, 26, 26)
+                                .addComponent(panel1, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                .addContainerGap(18, Short.MAX_VALUE)
+                                .addComponent(panelJuego, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
                         .addComponent(panelChat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(34, 34, 34)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -293,7 +399,7 @@ public class FormCliente extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 780, 580));
+        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 780, 610));
 
         jMenu1.setText("Instrucciones de Juego");
 
@@ -310,74 +416,23 @@ public class FormCliente extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void userActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        /*
-         * obtenemos el nombre del usuario
-         */
-        String username = this.jTextField1.getText().trim();
-        /*
-         * Realizamos un castign para saber que el jugador no es vacio
-         */
-        if (!username.isEmpty()) {
-            /*
-             * COnstruimos una instancia de cliente con los parametros establecidos
-             * Localhost: nombre del sevidor
-             * 1500: nro de puerto
-             * username: el nombre del cliente
-             * this: hace referencia a la instancia del formulario para manipularlo
-             */
-            cliente = new Cliente("localhost", 1500, username, this);
-            /*{
-             * si el cliente no puede conectarse se imprime dicho contenido por 
-             * consola , en caso contrario se muestran los paneles no visibles
-             * y se procede a jugar
-             */
-            if (!cliente.iniciar()) {
-                System.out.println("imposible realizar conexion");
-                this.userEmpty.setText("Servidor  se encuentra apagado");
-                return;
-            } else {
-                /*
-                 * cambiamos el titulo del formulario
-                 */
-                this.setTitle("Bienvenid@ " + username);
-                System.out.println("conexion realizada con exito");
-                /*
-                 * damos visibilidad a los paneles invisibles
-                 */
-                this.panelUsuarios.setVisible(true);
-                this.panel1.setVisible(false);
-                this.panelChat.setVisible(true);
-                this.jTextArea1.append(username + "\n\n");
-                /*
-                 * le damos al temporizador que comiense, dicha funcion 
-                 * mostrara que usuarios se encuentran activos en el servidor
-                 */
-                timer.start();
-            }
-            /*
-             * se establece que la conexion fue existo
-             */
-            connected = true;
-        } else {
-            this.userEmpty.setText("Se requiere un nombre de usuario ");
-        }
-
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_userActionPerformed
 
     private void mensajeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mensajeActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_mensajeActionPerformed
     public void añadirUsuarios(String nombreUsuario) {
-        this.jTextArea1.setText(nombreUsuario);
+        this.cajaUsuarios.setText(nombreUsuario);
     }
-    public void agregarMensaje(String msj)
-    {
-        this.cajaMensajes.append(msj+"\n");
+
+    public void agregarMensaje(String msj) {
+        this.cajaMensajes.append(msj + "\n");
+    }
+
+    public void agregarNumeroJuego(String msj) {
+        this.resultados.append(msj + "\n");
     }
     /*
      * muestra la información del servidor respecto a los usuarios que estan 
@@ -389,9 +444,9 @@ public class FormCliente extends javax.swing.JFrame {
             cliente.enviarMensajeAlServidor(new paqueteMensaje(paqueteMensaje.tipoQuienesSeEncuentranConectados, ""));
         }
     }
-    public void mensajes()
-    {
-         if (!cliente.equals(null)) {
+
+    public void mensajes() {
+        if (!cliente.equals(null)) {
             cliente.enviarMensajeAlServidor(new paqueteMensaje(paqueteMensaje.tipoMensajeTexto, ""));
         }
     }
@@ -432,7 +487,7 @@ public class FormCliente extends javax.swing.JFrame {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea cajaMensajes;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JTextArea cajaUsuarios;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -446,13 +501,16 @@ public class FormCliente extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField mensaje;
+    private javax.swing.JTextField nroPropuesto;
     private javax.swing.JPanel panel1;
     private javax.swing.JPanel panelChat;
+    private javax.swing.JPanel panelJuego;
     private javax.swing.JPanel panelUsuarios;
+    private javax.swing.JTextArea resultados;
+    private javax.swing.JTextField user;
     private javax.swing.JLabel userEmpty;
     // End of variables declaration//GEN-END:variables
 }

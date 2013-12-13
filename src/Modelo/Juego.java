@@ -12,11 +12,11 @@ import java.util.Random;
  */
 public class Juego {
 
-    public int getNumero() {
+    public String getNumero() {
         return numero;
     }
 
-    public void setNumero(int numero) {
+    public void setNumero(String numero) {
         this.numero = numero;
     }
 
@@ -35,7 +35,7 @@ public class Juego {
     public void setRespuesta(String respuesta) {
         this.respuesta = respuesta;
     }
-    private int numero;
+    private String numero;
     private static  Random nroAleatorio = new Random();
     private String  respuesta;
     public String generarNumero()
@@ -45,7 +45,24 @@ public class Juego {
         int  nroGenerado2 = nroAleatorio.nextInt(4);
         int  nroGenerado3 = nroAleatorio.nextInt(4);
         int  nroGenerado4 = nroAleatorio.nextInt(4);
-        num = nroGenerado1+"."+nroGenerado2+"."+nroGenerado3+"."+nroGenerado4;
+        num = nroGenerado1+""+nroGenerado2+""+nroGenerado3+""+nroGenerado4;
+        this.numero = num;
         return num;
+    }
+    public String verificarNumero(String numero1)
+    {
+        if(this.numero.equalsIgnoreCase(numero1))
+        {
+            return "XXXX";
+        }
+        String rta="";
+        for(int i = 0 ; i < 4 ; i++)
+        {
+            if(this.numero.charAt(i)==numero1.charAt(i))
+            {
+                rta += "X";
+            }
+        }
+        return rta;
     }
 }
